@@ -1,0 +1,9 @@
+{
+  "buildCommand": "pnpm --filter @workspace/streaming-tv run typecheck && pnpm --filter @workspace/streaming-tv run build",
+  "outputDirectory": "artifacts/streaming-tv/dist/public",
+  "installCommand": "pnpm install",
+  "framework": null,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
