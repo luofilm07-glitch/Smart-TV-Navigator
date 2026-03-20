@@ -39,7 +39,7 @@ const navItems: { id: SidebarSection; label: string; icon: React.ReactNode }[] =
 
 export function Sidebar({ activeSection, onChange, focusedItem, onFocus }: SidebarProps) {
   return (
-    <aside className="fixed left-0 top-[57px] bottom-0 z-40 w-[220px] bg-[#0a0a0a] border-r border-gray-800/60 flex flex-col pt-4 pb-8 overflow-y-auto">
+    <aside className="hidden md:flex fixed left-0 top-[57px] bottom-0 z-40 w-[220px] bg-[#0a0a0a] border-r border-gray-800/60 flex-col pt-4 pb-8 overflow-y-auto">
       {/* Navigation */}
       <div className="px-3">
         <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2 px-2">Browse</p>

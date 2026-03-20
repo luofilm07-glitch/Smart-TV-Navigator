@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { VideoCard } from "@/components/VideoCard";
 import { Sidebar } from "@/components/Sidebar";
+import { MobileNav } from "@/components/MobileNav";
 import { categories } from "@/data/videos";
 import { useVideos, FirestoreVideo } from "@/hooks/useVideos";
 
@@ -234,7 +235,7 @@ export default function Home() {
         }}
       />
 
-      <div className="ml-[220px] pt-[57px]">
+      <div className="md:ml-[220px] pt-[57px]">
         {/* Category tabs */}
         <div className="sticky top-[57px] z-30 bg-[#0a0a0a] border-b border-gray-800/60">
           <CategoryTabs
@@ -253,12 +254,9 @@ export default function Home() {
         </div>
 
         {/* Video grid */}
-        <div className="p-5 pb-12">
+        <div className="p-3 md:p-5 pb-24 md:pb-12">
           {loading ? (
-            <div
-              className="grid gap-5"
-              style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
-            >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
               {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
             </div>
           ) : filteredVideos.length === 0 ? (
@@ -280,10 +278,7 @@ export default function Home() {
               )}
             </div>
           ) : (
-            <div
-              className="grid gap-5"
-              style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
-            >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
               {filteredVideos.map((video, idx) => {
                 const row = Math.floor(idx / COLS);
                 const col = idx % COLS;
@@ -324,6 +319,16 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      {/* Mobile bottom navigation */}
+      <MobileNav
+        activeSection={activeSection}
+        onChange={(s) => {
+          setActiveSection(s);
+          setFocusedVideoRow(0);
+          setFocusedVideoCol(0);
+        }}
+      />
 
       {/* Fullscreen video player */}
       {selectedVideo && (
