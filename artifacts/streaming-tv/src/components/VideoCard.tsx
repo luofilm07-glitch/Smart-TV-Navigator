@@ -94,7 +94,7 @@ export function VideoCard({ video, focused, onFocus, onClick, "data-tv-id": tvId
         )}
       </div>
 
-      {/* Info */}
+      {/* Info — title, avatar, channel name only */}
       <div className="flex gap-2.5">
         <ChannelAvatar initials={video.channelAvatar} channel={video.channel} />
         <div className="flex-1 min-w-0">
@@ -102,10 +102,8 @@ export function VideoCard({ video, focused, onFocus, onClick, "data-tv-id": tvId
             {video.title}
           </h3>
           <p className="text-xs text-gray-400 truncate">{video.channel}</p>
-          {video.isLive ? (
-            <p className="text-xs text-red-400 font-medium">{video.watchingCount} watching</p>
-          ) : (
-            <p className="text-xs text-gray-500">{video.views} views · {video.publishedAt}</p>
+          {video.isLive && (
+            <span className="live-badge text-xs mt-0.5 inline-block">● LIVE</span>
           )}
         </div>
       </div>

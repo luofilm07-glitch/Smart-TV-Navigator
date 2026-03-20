@@ -75,9 +75,9 @@ export function Sidebar({ activeSection, onChange, focusedItem, onFocus }: Sideb
         <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3 px-2">Channels</p>
         <div className="space-y-3">
           {[
-            { name: "VJ ADAMSON", initials: "VA", color: "bg-amber-600", count: "134K" },
-            { name: "CONFIDENTIAL", initials: "CF", color: "bg-slate-600", count: "2.3M" },
-            { name: "VJ PILES UG", initials: "VP", color: "bg-orange-600", count: "890K" },
+            { name: "VJ ADAMSON", initials: "VA", color: "bg-amber-600" },
+            { name: "CONFIDENTIAL", initials: "CF", color: "bg-slate-600" },
+            { name: "VJ PILES UG", initials: "VP", color: "bg-orange-600" },
           ].map((ch) => (
             <button
               key={ch.name}
@@ -86,26 +86,14 @@ export function Sidebar({ activeSection, onChange, focusedItem, onFocus }: Sideb
               <div className={`w-8 h-8 rounded-full ${ch.color} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}>
                 {ch.initials}
               </div>
-              <div className="text-left min-w-0">
-                <p className="text-gray-200 font-medium text-xs truncate">{ch.name}</p>
-                <p className="text-gray-500 text-xs">{ch.count} views</p>
-              </div>
+              <p className="text-gray-200 font-medium text-xs truncate">{ch.name}</p>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Admin link */}
+      {/* Footer branding */}
       <div className="mt-auto px-3 pt-4 border-t border-gray-800/60">
-        <a
-          href="/admin"
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-500 hover:bg-[#1e1e1e] hover:text-gray-300 transition-all"
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-          </svg>
-          Admin Panel
-        </a>
         <div className="flex items-center gap-2 px-3 py-2 opacity-40">
           <img src="/play-button.png" alt="" className="w-4 h-4 object-contain" />
           <span className="text-gray-500 text-xs">NexStream © 2024</span>
