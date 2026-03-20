@@ -95,11 +95,20 @@ export function Sidebar({ activeSection, onChange, focusedItem, onFocus }: Sideb
         </div>
       </div>
 
-      {/* Footer branding */}
-      <div className="mt-auto px-4 pt-4">
-        <div className="flex items-center gap-2 opacity-50">
-          <img src="/play-button.png" alt="" className="w-5 h-5 object-contain" />
-          <span className="text-gray-400 text-xs">NexStream © 2024</span>
+      {/* Admin link */}
+      <div className="mt-auto px-3 pt-4 border-t border-gray-800/60">
+        <a
+          href="/admin"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-500 hover:bg-[#1e1e1e] hover:text-gray-300 transition-all"
+        >
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+          </svg>
+          Admin Panel
+        </a>
+        <div className="flex items-center gap-2 px-3 py-2 opacity-40">
+          <img src="/play-button.png" alt="" className="w-4 h-4 object-contain" />
+          <span className="text-gray-500 text-xs">NexStream © 2024</span>
         </div>
       </div>
     </aside>

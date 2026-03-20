@@ -3,15 +3,33 @@ import { Header } from "@/components/Header";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { VideoCard } from "@/components/VideoCard";
 import { Sidebar } from "@/components/Sidebar";
-import { mainVideos, categories } from "@/data/videos";
-import { EMBED_URL } from "@/data/videos";
+import { categories } from "@/data/videos";
+import { useVideos, FirestoreVideo } from "@/hooks/useVideos";
 
 type SidebarSection = "all" | "movies" | "series";
 type FocusZone = "header" | "sidebar" | "categories" | "videos";
 
 const COLS = 4;
 
+// Skeleton loader
+function SkeletonCard() {
+  return (
+    <div className="animate-pulse">
+      <div className="w-full aspect-video bg-gray-800 rounded-xl mb-2" />
+      <div className="flex gap-2.5">
+        <div className="w-9 h-9 rounded-full bg-gray-800 flex-shrink-0" />
+        <div className="flex-1 space-y-2 pt-0.5">
+          <div className="h-3 bg-gray-800 rounded w-full" />
+          <div className="h-3 bg-gray-800 rounded w-3/4" />
+          <div className="h-2.5 bg-gray-800 rounded w-1/2" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
+  const { videos, loading } = useVideos();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSection, setActiveSection] = useState<SidebarSection>("all");
@@ -20,11 +38,11 @@ export default function Home() {
   const [focusedVideoRow, setFocusedVideoRow] = useState(0);
   const [focusedVideoCol, setFocusedVideoCol] = useState(0);
   const [focusedSidebarItem, setFocusedSidebarItem] = useState<string>("");
-  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<FirestoreVideo | null>(null);
 
   const sidebarItems = ["sidebar-all", "sidebar-movies", "sidebar-series"];
 
-  const filteredVideos = mainVideos.filter((v) => {
+  const filteredVideos = videos.filter((v) => {
     const matchesSection = activeSection === "all" || v.section === activeSection;
     const matchesCategory = selectedCategory === "All" || v.category === selectedCategory;
     const matchesSearch =
@@ -56,14 +74,13 @@ export default function Home() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " ", "Escape", "Backspace"].includes(e.key)) return;
 
-      // Close modal
-      if ((e.key === "Escape" || e.key === "Backspace") && selectedVideoId) {
+      if ((e.key === "Escape" || e.key === "Backspace") && selectedVideo) {
         e.preventDefault();
-        setSelectedVideoId(null);
+        setSelectedVideo(null);
         return;
       }
 
-      if (selectedVideoId) return;
+      if (selectedVideo) return;
 
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " "].includes(e.key)) {
         e.preventDefault();
@@ -86,8 +103,7 @@ export default function Home() {
             focusEl(`cat-${n}`);
           } else {
             setFocusedZone("sidebar");
-            const idx = sidebarItems.indexOf(`sidebar-${activeSection}`);
-            const id = sidebarItems[Math.max(0, idx)];
+            const id = `sidebar-${activeSection}`;
             setFocusedSidebarItem(id);
             focusEl(id);
           }
@@ -145,8 +161,7 @@ export default function Home() {
             focusEl(`video-${focusedVideoRow * COLS + nc}`);
           } else {
             setFocusedZone("sidebar");
-            const idx = sidebarItems.indexOf(`sidebar-${activeSection}`);
-            const id = sidebarItems[Math.max(0, idx)];
+            const id = `sidebar-${activeSection}`;
             setFocusedSidebarItem(id);
             focusEl(id);
           }
@@ -178,7 +193,7 @@ export default function Home() {
           }
         } else if (e.key === "Enter" || e.key === " ") {
           const video = filteredVideos[focusedVideoRow * COLS + focusedVideoCol];
-          if (video) setSelectedVideoId(video.id);
+          if (video) setSelectedVideo(video);
         }
         return;
       }
@@ -189,22 +204,17 @@ export default function Home() {
   }, [
     focusedZone, focusedCatIndex, focusedVideoRow, focusedVideoCol,
     focusedSidebarItem, activeSection, filteredVideos, videoRows,
-    getVideoColsInRow, focusEl, selectedVideoId,
+    getVideoColsInRow, focusEl, selectedVideo,
   ]);
 
-  // Initial focus on mount
   useEffect(() => {
-    setTimeout(() => focusEl("video-0"), 100);
+    setTimeout(() => focusEl("video-0"), 200);
   }, []);
-
-  const selectedVideo = selectedVideoId
-    ? [...mainVideos].find((v) => v.id === selectedVideoId)
-    : null;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <Header
-        onSearch={(q) => { setSearchQuery(q); }}
+        onSearch={(q) => setSearchQuery(q)}
         searchQuery={searchQuery}
         focused={focusedZone === "header"}
         onFocus={() => setFocusedZone("header")}
@@ -224,9 +234,8 @@ export default function Home() {
         }}
       />
 
-      {/* Main area - offset for header + sidebar */}
       <div className="ml-[220px] pt-[57px]">
-        {/* Category tabs - sticky below header */}
+        {/* Category tabs */}
         <div className="sticky top-[57px] z-30 bg-[#0a0a0a] border-b border-gray-800/60">
           <CategoryTabs
             selected={selectedCategory}
@@ -245,11 +254,30 @@ export default function Home() {
 
         {/* Video grid */}
         <div className="p-5 pb-12">
-          {filteredVideos.length === 0 ? (
+          {loading ? (
+            <div
+              className="grid gap-5"
+              style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
+            >
+              {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
+            </div>
+          ) : filteredVideos.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <img src="/play-button.png" alt="" className="w-20 h-20 opacity-20 mb-4" />
               <p className="text-gray-400 text-lg font-medium">No videos found</p>
-              <p className="text-gray-600 text-sm mt-1">Try a different category or search term</p>
+              <p className="text-gray-600 text-sm mt-1">
+                {videos.length === 0
+                  ? "No videos uploaded yet. Visit the admin panel to add content."
+                  : "Try a different category or search term."}
+              </p>
+              {videos.length === 0 && (
+                <a
+                  href="/admin"
+                  className="mt-4 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm transition-colors"
+                >
+                  Go to Admin Panel
+                </a>
+              )}
             </div>
           ) : (
             <div
@@ -266,7 +294,21 @@ export default function Home() {
                 return (
                   <VideoCard
                     key={video.id}
-                    video={video}
+                    video={{
+                      id: video.id!,
+                      title: video.title,
+                      channel: video.channel,
+                      channelAvatar: video.channelAvatar,
+                      thumbnail: video.thumbnailUrl,
+                      views: video.views,
+                      duration: video.duration,
+                      publishedAt: video.publishedAt,
+                      isLive: video.isLive,
+                      watchingCount: video.watchingCount,
+                      category: video.category,
+                      section: video.section,
+                      embedUrl: video.embedUrl,
+                    }}
                     data-tv-id={`video-${idx}`}
                     focused={isFocused}
                     onFocus={() => {
@@ -274,7 +316,7 @@ export default function Home() {
                       setFocusedVideoRow(row);
                       setFocusedVideoCol(col);
                     }}
-                    onClick={() => setSelectedVideoId(video.id)}
+                    onClick={() => setSelectedVideo(video)}
                   />
                 );
               })}
@@ -283,11 +325,10 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Video Player Modal - fullscreen embed */}
+      {/* Fullscreen video player */}
       {selectedVideo && (
         <div className="fixed inset-0 z-[100] bg-black flex flex-col">
-          {/* Top bar */}
-          <div className="flex items-center justify-between px-6 py-3 bg-black/80 backdrop-blur-sm flex-shrink-0">
+          <div className="flex items-center justify-between px-6 py-3 bg-black/90 backdrop-blur-sm flex-shrink-0">
             <div className="flex items-center gap-3">
               <img src="/play-button.png" alt="" className="w-7 h-7 object-contain" />
               <div>
@@ -297,11 +338,11 @@ export default function Home() {
             </div>
             <button
               autoFocus
-              onClick={() => setSelectedVideoId(null)}
+              onClick={() => setSelectedVideo(null)}
               onKeyDown={(e) => {
-                if (e.key === "Escape" || e.key === "Backspace") setSelectedVideoId(null);
+                if (e.key === "Escape" || e.key === "Backspace") setSelectedVideo(null);
               }}
-              className="flex items-center gap-2 text-gray-300 hover:text-white border border-gray-600 hover:border-red-500 px-3 py-1.5 rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="flex items-center gap-2 text-gray-300 hover:text-white border border-gray-700 hover:border-red-500 px-3 py-1.5 rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -309,13 +350,11 @@ export default function Home() {
               Close (Esc)
             </button>
           </div>
-
-          {/* Full embed */}
-          <div className="flex-1 relative">
+          <div className="flex-1 relative bg-black">
             <iframe
-              src={selectedVideo.embedUrl || EMBED_URL}
+              src={selectedVideo.embedUrl}
               loading="lazy"
-              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen"
               allowFullScreen
               className="absolute inset-0 w-full h-full border-0"
             />
