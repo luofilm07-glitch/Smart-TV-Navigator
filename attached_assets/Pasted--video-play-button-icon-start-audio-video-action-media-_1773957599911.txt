@@ -1,0 +1,29 @@
+![video-play-button-icon-start-audio-video-action-media-symbol-apps-websites_680540-2075-removebg-preview.png](https://ucarecdn.com/13753398-59e9-4fb0-8b99-2f6678c57a87/-/format/auto/)
+LET IT SHOW ONLY THUMBNAILS AND ON SIDEBAR TO BE MOVIES, SERIES AND ON THIS FILTERS All
+Music
+Live
+Mixes
+Gaming
+News
+Podcasts
+Learning
+Fashion
+BeautyTO BE VJ ADAMSON, CONFIDENTIAL, VJ PILES UG LET WHEN USER CLICK THUMBNAILS TO OPEN PLAY AND ON PLAY EMBED IT TO BE THIS VIDEO THAT EMBED FULLSCREEN AND IFRAME <div style="position:relative;padding-top:56.25%;"><iframe src="https://player.mediadelivery.net/embed/620546/fa2cc3b7-aba0-409b-b197-d314d7062763?autoplay=true&loop=false&muted=false&preload=true&responsive=true" loading="lazy" style="border:0;position:absolute;top:0;height:100%;width:100%;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" allowfullscreen="true"></iframe></div> AND NAME THE APP TO BE NEX STREAM AND CREATE A PROFFESIONAL LOADING ANIMATION AND SCREEN SPLASH, ON MY EMBEDED VIDEO WHEN I CLICK FULLSCREEN IS NOT OPENING FULLSCREEN AND LET MOVIE NAME TO GRID UNDER THE THUMBNAIL  AND CREATE A WEBSITE FOR ADMIN TO UPLOAD MOVIE TO THE APP WHEN WHEN ADMIN UPLOAD IT DISPLAY REAL AND PLAY REAL IN THE APP LET MOVIE NAME TO BE UNDER THE THUMBNAILSLET SEARCH TO WORK REAL AND REMOVE ALL OTHER OPTION LIKE RECORDER, VIDEO RECORD, PROFILE AVATAR PUT THIS TO BE THE APP LOGO AM NOT SEEING THE CLASSIC LOADING ANIMATION DESIGN BEST DESIGN IT PROFFESIONALLY AND SMART ANIMATING AND FOR ADMIN UPLOAD USE THIS FIREBASE LET EVERYTHING WORKS REAL AND FULLY // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// [https://firebase.google.com/docs/web/setup#available-libraries](https://firebase.google.com/docs/web/setup#available-libraries)
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCONUzhCPKn_AbvTVNhjC6K1zSez1W5hJ4",
+  authDomain: "nex-stream-82e7c.firebaseapp.com",
+  projectId: "nex-stream-82e7c",
+  storageBucket: "nex-stream-82e7c.firebasestorage.app",
+  messagingSenderId: "762349575042",
+  appId: "1:762349575042:web:56cfcd6b72848d5717cd9b",
+  measurementId: "G-G9D6LCYX2B"
+};
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app); USE FIREESTORE DATABASE
